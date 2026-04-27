@@ -1330,44 +1330,57 @@ export function CalculatorApp({
 
             {commercialStats && (
               <div className="bg-slate-50 dark:bg-[#222421] border border-slate-200 dark:border-slate-700 p-4 sm:p-5 rounded-[16px] space-y-6 mt-4 relative z-10 shadow-sm transition-colors">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 pl-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 pl-1">
+                  {/* Per Ton Calculation */}
                   <div className="space-y-4">
-                    <h4 className="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center justify-between">
+                    <h4 className="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center justify-between">
                       <span>На 1 тонну продукции (без НДС)</span>
-                      <TrendingUp className="w-3 h-3" />
+                      <TrendingUp className="w-3.5 h-3.5 opacity-60" />
                     </h4>
-                    <div className="space-y-3 t-xs">
-                      <div className="flex justify-between items-center font-medium group">
-                        <span className="text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">Продажная цена:</span>
-                        <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(sellPrice)} руб.</span>
+                    <div className="space-y-3.5 text-[13px]">
+                      <div className="flex justify-between items-start gap-4 font-medium group">
+                        <span className="text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors shrink-0">Продажная цена:</span>
+                        <span className="font-bold text-slate-900 dark:text-white text-right leading-tight">{formatCurrency(sellPrice)} руб.</span>
                       </div>
-                      <div className="flex justify-between items-center text-[#BA1A1A] dark:text-red-400 font-medium group">
-                        <span className="group-hover:text-[#BA1A1A]/80 transition-colors">- Стоимость заготовки:</span>
-                        <span className="font-bold">{currentAdminRawPrice ? `${formatCurrency(currentAdminRawPrice)} руб.` : "—"}</span>
+                      <div className="flex justify-between items-start gap-4 text-[#BA1A1A] dark:text-red-400/90 font-medium group">
+                        <span className="group-hover:text-[#BA1A1A] transition-colors shrink-0 leading-tight">- Стоимость заготовки:</span>
+                        <span className="font-bold text-right leading-tight">{currentAdminRawPrice ? `${formatCurrency(currentAdminRawPrice)} руб.` : "—"}</span>
                       </div>
-                      <div className="flex justify-between items-center text-[#BA1A1A] dark:text-red-400 font-medium group">
-                        <span className="group-hover:text-[#BA1A1A]/80 transition-colors">- Прямые затраты (произв.):</span>
-                        <span className="font-bold">{formatCurrency(commercialStats.totalProcessingCostsPerTon)} руб.</span>
+                      <div className="flex justify-between items-start gap-4 text-[#BA1A1A] dark:text-red-400/90 font-medium group">
+                        <span className="group-hover:text-[#BA1A1A] transition-colors shrink-0 leading-tight">- Прямые затраты:</span>
+                        <span className="font-bold text-right leading-tight">{formatCurrency(commercialStats.totalProcessingCostsPerTon)} руб.</span>
                       </div>
-                      <div className="flex justify-between items-center text-[#BA1A1A] dark:text-red-400 font-medium group">
-                        <span className="group-hover:text-[#BA1A1A]/80 transition-colors">- Затраты на отходы:</span>
-                        <span>{formatCurrency(commercialStats.lossesPerTon)} руб.</span>
+                      <div className="flex justify-between items-start gap-4 text-[#BA1A1A] dark:text-red-400/90 font-medium group">
+                        <span className="group-hover:text-[#BA1A1A] transition-colors shrink-0 leading-tight">- Затраты на отходы:</span>
+                        <span className="font-bold text-right leading-tight">{formatCurrency(commercialStats.lossesPerTon)} руб.</span>
                       </div>
-                      {commercialStats.scrapRevenuePerTon > 0 && (
-                        <div className="flex justify-between items-center text-[#0D652D] dark:text-green-400 font-medium bg-[#E6F4EA]/50 dark:bg-green-900/5 px-2.5 py-2 rounded-xl border border-[#CEEAD6]/50 dark:border-green-900/20">
-                          <span>+ Возврат лома / остатков:</span>
-                          <span className="font-bold">{formatCurrency(commercialStats.scrapRevenuePerTon)} руб.</span>
+                      
+                      {commercialStats.scrapRevenuePerTon > 0 && advancedRemnantStats && (
+                        <div className="mt-4 bg-[#E6F4EA]/50 dark:bg-green-950/20 px-3.5 py-3 rounded-[14px] border border-[#CEEAD6] dark:border-green-900/30 flex flex-col gap-2 transition-colors">
+                          <div className="flex justify-between items-start gap-4 text-[#0D652D] dark:text-green-400 font-bold text-[12px]">
+                            <span>+ Возврат лома / остатков:</span>
+                            <span className="text-right">{formatCurrency(commercialStats.scrapRevenuePerTon)} руб.</span>
+                          </div>
+                          <div className="space-y-1 pl-1">
+                            <div className="flex justify-between text-[11px] text-[#0D652D]/80 dark:text-green-400/80 font-medium">
+                              <span>Лом ({(advancedRemnantStats.techTonsPerTon * 1000).toFixed(1)} кг):</span>
+                              <span>{formatCurrency(advancedRemnantStats.techScrapRevenuePerTon)} руб.</span>
+                            </div>
+                            <div className="flex justify-between text-[11px] text-[#0D652D]/80 dark:text-green-400/80 font-medium">
+                              <span>Деловой остаток ({(advancedRemnantStats.remTonsPerTon * 1000).toFixed(1)} кг):</span>
+                              <span>{formatCurrency(advancedRemnantStats.remnantRevenuePerTon)} руб.</span>
+                            </div>
+                          </div>
                         </div>
                       )}
-                      <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px]">Валовая прибыль (Маржа):</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className={`font-medium tracking-tight text-2xl ${commercialStats.isPositive ? "text-[#0D652D] dark:text-green-400" : "text-[#BA1A1A] dark:text-red-400"}`}>
-                            {commercialStats.isPositive ? "+" : ""}{formatCurrency(commercialStats.profitPerTon)} руб.
+
+                      <div className="pt-5 mt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
+                        <span className="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[9px]">Валовая прибыль (Маржа):</span>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                          <span className={`font-bold tracking-tight text-2xl leading-none whitespace-nowrap ${commercialStats.isPositive ? "text-[#0D652D] dark:text-green-400" : "text-[#BA1A1A] dark:text-red-400"}`}>
+                            {commercialStats.isPositive ? "+" : ""}{formatCurrency(commercialStats.profitPerTon)} <span className="text-sm font-medium">руб.</span>
                           </span>
-                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border shadow-sm ${commercialStats.isPositive ? "bg-[#E6F4EA] dark:bg-green-900/20 border-[#CEEAD6] dark:border-green-900/40 text-[#0D652D] dark:text-green-400" : "bg-[#FFDAD6] dark:bg-red-900/20 border-[#FFB4AB] dark:border-red-900/40 text-[#BA1A1A] dark:text-red-400"}`}>
+                          <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border shadow-sm ${commercialStats.isPositive ? "bg-[#E6F4EA] dark:bg-green-900/40 border-[#CEEAD6] dark:border-green-900/50 text-[#0D652D] dark:text-green-400" : "bg-[#FFDAD6] dark:bg-red-900/40 border-[#FFB4AB] dark:border-red-900/50 text-[#BA1A1A] dark:text-red-400"}`}>
                             {commercialStats.isPositive ? "+" : ""}{commercialStats.marginPercent.toFixed(1)}%
                           </span>
                         </div>
@@ -1375,42 +1388,55 @@ export function CalculatorApp({
                     </div>
                   </div>
 
+                  {/* Total Order Calculation */}
                   <div className="space-y-4">
-                    <h4 className="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center justify-between">
+                    <h4 className="text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest border-b border-slate-200 dark:border-slate-800 pb-2 flex items-center justify-between">
                       <span>На весь заказ ({totalPiecesInOrder} шт.)</span>
-                      <BarChart3 className="w-3 h-3" />
+                      <BarChart3 className="w-3.5 h-3.5 opacity-60" />
                     </h4>
-                    <div className="space-y-2.5 text-xs">
-                      <div className="flex justify-between items-center font-medium">
-                        <span className="text-slate-600 dark:text-slate-400">Сумма продажи:</span>
-                        <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(commercialStats.sellTotal)} руб.</span>
+                    <div className="space-y-3.5 text-[13px]">
+                      <div className="flex justify-between items-start gap-4 font-medium">
+                        <span className="text-slate-500 dark:text-slate-400 shrink-0">Сумма продажи:</span>
+                        <span className="font-bold text-slate-900 dark:text-white text-right leading-tight">{formatCurrency(commercialStats.sellTotal)} руб.</span>
                       </div>
-                      <div className="flex justify-between items-center text-[#BA1A1A] dark:text-red-400 font-medium">
-                        <span>- Все затраты:</span>
-                        <span>{formatCurrency(commercialStats.totalCostsPerTon * Number(orderWeight))} руб.</span>
+                      <div className="flex justify-between items-start gap-4 text-[#BA1A1A] dark:text-red-400/90 font-medium">
+                        <span className="shrink-0">- Все затраты:</span>
+                        <span className="font-bold text-right leading-tight">{formatCurrency(commercialStats.totalCostsPerTon * Number(orderWeight))} руб.</span>
                       </div>
-                      {commercialStats.scrapRevenueTotal > 0 && (
-                        <div className="flex justify-between items-center text-[#0D652D] dark:text-green-400 font-medium pb-2">
-                           <span>+ Общий возврат:</span>
-                           <span className="font-bold">{formatCurrency(commercialStats.scrapRevenueTotal)} руб.</span>
+                      {commercialStats.scrapRevenueTotal > 0 && advancedRemnantStats && (
+                        <div className="space-y-2.5">
+                          <div className="flex justify-between items-start gap-4 text-[#0D652D] dark:text-green-400 font-bold">
+                             <span className="shrink-0">+ Общий возврат:</span>
+                             <span className="text-right leading-tight">{formatCurrency(commercialStats.scrapRevenueTotal)} руб.</span>
+                          </div>
+                          <div className="space-y-1.5 pl-1.5">
+                            <div className="flex justify-between text-[11px] text-[#0D652D]/80 dark:text-green-400/80 font-semibold">
+                              <span>Лом ({advancedRemnantStats.orderTechTons.toFixed(3)} т):</span>
+                              <span>{formatCurrency(advancedRemnantStats.orderTechRevenue)} руб.</span>
+                            </div>
+                            <div className="flex justify-between text-[11px] text-[#0D652D]/80 dark:text-green-400/80 font-semibold">
+                              <span>Деловой остаток ({advancedRemnantStats.orderRemTons.toFixed(3)} т):</span>
+                              <span>{formatCurrency(advancedRemnantStats.orderRemRevenue)} руб.</span>
+                            </div>
+                          </div>
                         </div>
                       )}
                       
-                      <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl space-y-2">
-                        <div className="flex justify-between text-[11px] font-medium text-slate-500 dark:text-slate-100">
-                          <span>Налог (НДС 22%):</span>
-                          <span>{formatCurrency(commercialStats.sellTotalVat - commercialStats.sellTotal)} руб.</span>
+                      <div className="mt-4 p-4 bg-slate-100/80 dark:bg-slate-800/60 rounded-[18px] border border-slate-200/50 dark:border-slate-700/50 space-y-3 transition-colors">
+                        <div className="flex justify-between items-start gap-4 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                          <span className="shrink-0 uppercase tracking-widest leading-none">Налог (НДС 22%):</span>
+                          <span className="text-right leading-none">{formatCurrency(commercialStats.sellTotalVat - commercialStats.sellTotal)} руб.</span>
                         </div>
-                        <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between items-center">
-                          <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Итого с НДС:</span>
-                          <span className="text-lg font-bold text-slate-900 dark:text-white">{formatCurrency(commercialStats.sellTotalVat)} руб.</span>
+                        <div className="border-t border-slate-200 dark:border-slate-700/80 pt-3 flex justify-between items-center gap-3">
+                          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Итого с НДС</span>
+                          <span className="text-xl font-bold text-slate-900 dark:text-white leading-none whitespace-nowrap">{formatCurrency(commercialStats.sellTotalVat)} <span className="text-xs font-bold opacity-60 ml-0.5">₽</span></span>
                         </div>
                       </div>
 
-                      <div className="pt-2 flex flex-col gap-1.5 px-1">
-                        <span className="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px]">Чистая прибыль (всего):</span>
-                        <span className={`font-medium tracking-tight text-2xl ${commercialStats.isPositive ? "text-[#0D652D] dark:text-green-400" : "text-[#BA1A1A] dark:text-red-400"}`}>
-                          {commercialStats.isPositive ? "+" : ""}{formatCurrency(commercialStats.profitTotal)} руб.
+                      <div className="pt-3 flex flex-col gap-2">
+                        <span className="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[9px]">Чистая прибыль (всего):</span>
+                        <span className={`font-bold tracking-tight text-2xl leading-none whitespace-nowrap ${commercialStats.isPositive ? "text-[#0D652D] dark:text-green-400" : "text-[#BA1A1A] dark:text-red-400"}`}>
+                          {commercialStats.isPositive ? "+" : ""}{formatCurrency(commercialStats.profitTotal)} <span className="text-sm font-medium">руб.</span>
                         </span>
                       </div>
                     </div>
