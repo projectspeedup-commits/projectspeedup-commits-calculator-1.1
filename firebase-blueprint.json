@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "Calculation": {
+      "title": "Calculation",
+      "description": "A saved calculation result from the app",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "UID of the user who saved it" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp of creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp of update" },
+        "profileType": { "type": "string", "enum": ["round", "hex"] },
+        "steelGrade": { "type": "string" },
+        "selectedTarget": { "type": "string" },
+        "selectedRaw": { "type": "string" },
+        "orderWeight": { "type": "string" },
+        "orderedLength": { "type": "string" },
+        "sellPrice": { "type": "string" },
+        "rawPriceUsed": { "type": "string" },
+        "scrapPriceUsed": { "type": "string" },
+        "remnantPriceUsed": { "type": "string" },
+        "label": { "type": "string", "description": "Optional name for the calculation" }
+      },
+      "required": ["userId", "createdAt", "profileType", "steelGrade", "selectedTarget", "selectedRaw"]
+    }
+  },
+  "firestore": {
+    "/calculations/{calculationId}": {
+      "schema": "Calculation",
+      "description": "Collection of saved calculations"
+    }
+  }
+}

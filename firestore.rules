@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Auth Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Validation for Calculation entity
+    function isValidCalculation(data) {
+      return data.userId == request.auth.uid 
+        && data.createdAt == request.time
+        && data.profileType in ['round', 'hex']
+        && data.steelGrade is string && data.steelGrade.size() <= 100
+        && data.selectedTarget is string && data.selectedTarget.size() <= 50
+        && data.selectedRaw is string && data.selectedRaw.size() <= 50
+        && (data.orderWeight == null || (data.orderWeight is string && data.orderWeight.size() <= 20))
+        && (data.orderedLength == null || (data.orderedLength is string && data.orderedLength.size() <= 20))
+        && (data.label is string && data.label.size() <= 200);
+    }
+
+    // Calculations collection
+    match /calculations/{calculationId} {
+      allow create: if isSignedIn() && isValidCalculation(request.resource.data);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      // No updates for now, just recreate
+      allow update: if false;
+    }
+
+    // App Settings (Prices/Admin)
+    // Based on App.tsx: artifacts/{appId}/public/data/settings/prices
+    match /artifacts/{appId}/public/data/settings/prices {
+      // Allow read for authenticated users (managers)
+      allow read: if isSignedIn();
+      // Allow write - In a real app we'd check for an admin role. 
+      // For this app, it seems any logged in user can save settings according to App.tsx
+      allow write: if isSignedIn(); 
+    }
+  }
+}
