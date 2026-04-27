@@ -665,6 +665,16 @@ export function CalculatorApp({
     text += `Продажная цена (за 1 т): без НДС ${formatCurrency(sellPriceNum)} руб.\n`;
     text += `- Стоимость заготовки: без НДС ${formatCurrency(rawPriceNum)} руб.\n`;
     
+    if (commercialStats) {
+      const directCosts = commercialStats.economyData.filter(i => i.category === 'direct' && i.costPerTon > 0);
+      if (directCosts.length > 0) {
+        text += `- Прямые затраты: ${formatCurrency(commercialStats.totalProcessingCostsPerTon)} руб.\n`;
+        directCosts.forEach(item => {
+          text += `  └ ${item.name}: ${formatCurrency(item.costPerTon)} руб.\n`;
+        });
+      }
+    }
+    
     if (commercialStats && advancedRemnantStats && rawPriceNum > 0) {
       text += `- Затраты на отходы (1 т): ${formatCurrency(commercialStats.lossesPerTon)} руб.\n`;
       text += `  Лом (${(advancedRemnantStats.techTonsPerTon * 1000).toFixed(1)} кг): ${formatCurrency(advancedRemnantStats.techValuePerTon)} руб.\n`;
@@ -1350,6 +1360,18 @@ export function CalculatorApp({
                         <span className="group-hover:text-[#BA1A1A] transition-colors shrink-0 leading-tight">- Прямые затраты:</span>
                         <span className="font-bold text-right leading-tight">{formatCurrency(commercialStats.totalProcessingCostsPerTon)} руб.</span>
                       </div>
+
+                      {commercialStats.economyData.filter(i => i.category === 'direct' && i.costPerTon > 0).length > 0 && (
+                        <div className="space-y-1.5 pl-2 border-l border-slate-200 dark:border-slate-800 ml-1.5 mb-1">
+                          {commercialStats.economyData.filter(i => i.category === 'direct' && i.costPerTon > 0).map(item => (
+                            <div key={item.id} className="flex justify-between text-[11px] text-[#BA1A1A]/70 dark:text-red-400/70 font-medium tracking-tight">
+                              <span className="truncate pr-4 leading-none">└ {item.name}:</span>
+                              <span className="shrink-0 leading-none">{formatCurrency(item.costPerTon)} ₽</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
                       <div className="flex justify-between items-start gap-4 text-[#BA1A1A] dark:text-red-400/90 font-medium group">
                         <span className="group-hover:text-[#BA1A1A] transition-colors shrink-0 leading-tight">- Затраты на отходы:</span>
                         <span className="font-bold text-right leading-tight">{formatCurrency(commercialStats.lossesPerTon)} руб.</span>
@@ -1484,16 +1506,55 @@ export function CalculatorApp({
                                   <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200 truncate pr-2">{item.name}</span>
                                   <TrendingUp className="w-3 h-3 text-slate-300 shrink-0" />
                                </div>
-                               <div className="flex items-center justify-between">
-                                  <span className="text-[10px] text-slate-500 font-medium">Норма на тн</span>
-                                  <span className="text-xs font-bold text-slate-900 dark:text-white">{formatCurrency(item.costPerTon)} ₽</span>
+                               <div className="space-y-1.5">
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[10px] text-slate-500 font-medium">Норма на тн:</span>
+                                    <span className="text-xs font-bold text-slate-900 dark:text-white">{formatCurrency(item.costPerTon)} ₽</span>
+                                 </div>
+                                 <div className="flex items-center justify-between border-t border-slate-50 dark:border-slate-800/50 pt-1.5">
+                                    <span className="text-[10px] text-slate-500 font-medium">Сумма на весь заказ:</span>
+                                    <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400">{formatCurrency(item.costPerTon * Number(orderWeight))} ₽</span>
+                                 </div>
                                </div>
                             </div>
                           ))}
                        </div>
                     </div>
+
+                    {/* Overhead Costs */}
+                    {commercialStats.economyData.filter(i => i.category === 'overhead' && i.costPerTon > 0).length > 0 && (
+                      <div className="p-5 border-t border-slate-100 dark:border-slate-800">
+                         <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                              <Circle className="w-1.5 h-1.5 fill-amber-500 text-amber-500" />
+                              Общие/Накладные расходы
+                            </h4>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{formatCurrency(commercialStats.overheadEconomyCostsPerTon)} руб./т</span>
+                         </div>
+                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {commercialStats.economyData.filter(i => i.category === 'overhead' && i.costPerTon > 0).map(item => (
+                              <div key={item.id} className="bg-white dark:bg-[#1A1C19] p-3 rounded-[18px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+                                 <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200 truncate pr-2">{item.name}</span>
+                                    <PieChart className="w-3 h-3 text-slate-300 shrink-0" />
+                                 </div>
+                                 <div className="space-y-1.5">
+                                   <div className="flex items-center justify-between">
+                                      <span className="text-[10px] text-slate-500 font-medium">Норма на тн:</span>
+                                      <span className="text-xs font-bold text-slate-900 dark:text-white">{formatCurrency(item.costPerTon)} ₽</span>
+                                   </div>
+                                   <div className="flex items-center justify-between border-t border-slate-50 dark:border-slate-800/50 pt-1.5">
+                                      <span className="text-[10px] text-slate-500 font-medium">Сумма на заказ:</span>
+                                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400">{formatCurrency(item.costPerTon * Number(orderWeight))} ₽</span>
+                                   </div>
+                                 </div>
+                              </div>
+                            ))}
+                         </div>
+                      </div>
+                    )}
                   </div>
-               </div>
+                </div>
             )}
             
             {commercialStats && (
