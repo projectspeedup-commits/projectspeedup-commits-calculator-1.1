@@ -1,4 +1,4 @@
-import { Calculator, Lock, Moon, Sun, User } from "lucide-react";
+import { Calculator, Key, Lock, Moon, Sun, User } from "lucide-react";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -103,7 +103,7 @@ export function LoginScreen({ onManagerLogin, onAdminLogin, isCloudActive, isDar
             className="bg-white dark:bg-[#1A1C19] p-6 sm:p-8 rounded-[32px] shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center transition-colors"
           >
             <div className="flex items-center gap-3 mb-5 justify-center">
-              <Lock className="w-6 h-6 text-slate-700 dark:text-slate-400" strokeWidth={1.5} />
+              <Key className="w-6 h-6 text-slate-700 dark:text-slate-400" strokeWidth={1.5} />
               <h2 className="text-xl font-medium text-[#1A1C19] dark:text-white">Вход для управления</h2>
             </div>
 
