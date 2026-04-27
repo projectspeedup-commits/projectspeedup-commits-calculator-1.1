@@ -155,7 +155,7 @@ export function AdminPanel({
   return (
     <div className="min-h-screen bg-[#F4F5F4] dark:bg-[#121411] flex flex-col md:flex-row transition-colors duration-300">
       {/* Mobile App Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 w-full bg-white/95 dark:bg-[#1A1C19]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-between items-center h-16 px-2 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] print:hidden">
+      <div className="md:hidden fixed bottom-0 w-full bg-white/95 dark:bg-[#1A1C19]/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 flex justify-between items-center h-16 px-2 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
          <button 
            onClick={() => setActiveTab("prices")}
            className={`flex flex-col items-center justify-center flex-1 h-full py-1 transition-all ${activeTab === 'prices' ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500'}`}
@@ -204,10 +204,10 @@ export function AdminPanel({
       </div>
 
       {/* Desktop Navigation Rail */}
-      <aside className="hidden md:flex flex-col w-[88px] bg-slate-50 dark:bg-[#1A1C19] border-r border-slate-200 dark:border-slate-800 items-center py-6 sticky top-0 h-screen z-50 shrink-0 transition-colors duration-300">
+      <div className="hidden md:flex flex-col w-[88px] bg-[#F0F4F4] dark:bg-[#1A1C19] border-r border-slate-200 dark:border-slate-800 items-center py-6 fixed h-full z-50">
         <div className="flex flex-col items-center mb-8">
            <div className="w-12 h-12 bg-slate-700 dark:bg-slate-600 rounded-xl flex items-center justify-center text-white mb-2 shadow-sm">
-             <Calculator className="w-6 h-6" strokeWidth={1.5} />
+             <Calculator className="w-6 h-6" />
            </div>
         </div>
         <div className="flex-1 flex flex-col gap-4 w-full px-3">
@@ -228,7 +228,7 @@ export function AdminPanel({
              <div className={`px-5 py-1.5 mb-1.5 rounded-full transition-colors ${activeTab === 'economy' ? 'bg-slate-200 dark:bg-slate-700' : 'group-hover:bg-slate-100 dark:group-hover:bg-slate-800'}`}>
                <Calculator className="w-6 h-6" strokeWidth={2} />
              </div>
-             <span className="text-[11px] font-medium tracking-wide">Нормы</span>
+             <span className="text-[11px] font-medium tracking-wide">Экономика</span>
            </button>
 
            <button 
@@ -249,17 +249,17 @@ export function AdminPanel({
            </button>
         </div>
         <div className="w-full px-3">
-           <button onClick={onLogout} className="w-full flex flex-col items-center justify-center py-4 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors group">
-             <div className="px-5 py-1.5 mb-1.5 transition-colors group-hover:bg-red-50 dark:group-hover:bg-red-900/10 rounded-full">
-               <LogOut className="w-6 h-6 group-hover:text-red-500" strokeWidth={2} />
+           <button onClick={onLogout} className="w-full flex flex-col items-center justify-center py-4 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+             <div className="px-5 py-1.5 mb-1.5">
+               <LogOut className="w-6 h-6" strokeWidth={2} />
              </div>
              <span className="text-[11px] font-medium tracking-wide">Выйти</span>
            </button>
         </div>
-      </aside>
+      </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 pb-24 md:pb-8 pt-8 px-4 sm:px-8 w-full max-w-[1440px] mx-auto overflow-hidden">
+      <div className="flex-1 md:ml-[88px] pb-24 md:pb-8 pt-8 px-4 sm:px-8 w-full">
         <AnimatePresence mode="wait">
           {activeTab === "prices" ? (
             <motion.div

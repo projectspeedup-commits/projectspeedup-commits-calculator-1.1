@@ -740,14 +740,14 @@ export function CalculatorApp({
       </div>
 
       {/* Desktop Navigation Rail */}
-      <aside className="hidden md:flex flex-col w-[88px] bg-slate-50 dark:bg-[#1A1C19] border-r border-slate-200 dark:border-slate-800 items-center py-6 sticky top-0 h-screen z-50 print-hide shrink-0 transition-colors duration-300">
+      <div className="hidden md:flex flex-col w-[88px] bg-[#F0F4F4] dark:bg-[#1A1C19] border-r border-slate-200 dark:border-slate-800 items-center py-6 fixed h-full z-50 print-hide">
         <div className="flex flex-col items-center mb-8 relative group">
            <button 
              onClick={onAdminSwitch}
              className="w-12 h-12 bg-slate-700 dark:bg-slate-600 rounded-xl flex items-center justify-center text-white mb-2 shadow-sm hover:bg-slate-800 dark:hover:bg-slate-500 transition-all active:scale-95 peer"
              title="Вход для управления"
            >
-             <Key className="w-6 h-6 outline-none" strokeWidth={1.5} />
+             <Key className="w-6 h-6 outline-none" />
            </button>
            <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-[60]">
              Вход для управления
@@ -768,17 +768,17 @@ export function CalculatorApp({
            </button>
         </div>
         <div className="w-full px-3">
-           <button onClick={onLogout} className="w-full flex flex-col items-center justify-center py-4 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group">
-             <div className="px-5 py-1.5 mb-1.5 transition-colors group-hover:bg-red-50 dark:group-hover:bg-red-900/10 rounded-full">
-               <LogOut className="w-6 h-6 group-hover:text-red-500" strokeWidth={2} />
+           <button onClick={onLogout} className="w-full flex flex-col items-center justify-center py-4 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
+             <div className="px-5 py-1.5 mb-1.5">
+               <LogOut className="w-6 h-6" strokeWidth={2} />
              </div>
              <span className="text-[11px] font-medium tracking-wide">Выйти</span>
            </button>
         </div>
-      </aside>
+      </div>
 
-      <div className="flex-1 pb-24 md:pb-8 relative overflow-hidden transition-all duration-300">
-        <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto relative z-10 max-w-[1440px]">
+      <div className="flex-1 md:ml-[88px] pb-24 md:pb-8 relative">
+        <div className="max-w-[1024px] xl:max-w-[1440px] w-full px-4 sm:px-6 lg:px-8 mx-auto relative z-10">
           {notification && (
             <div className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl z-[100] animate-in fade-in zoom-in slide-in-from-top-4 duration-300 border ${
               notification.type === 'success' ? 'bg-green-600 border-green-500 text-white' : 'bg-red-600 border-red-500 text-white'
@@ -790,15 +790,15 @@ export function CalculatorApp({
             </div>
           )}
           {/* HEADER */}
-          <header className="sticky top-0 z-40 bg-[#F4F5F4]/90 dark:bg-[#121411]/90 backdrop-blur-md pt-4 pb-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-6 print-hide transition-colors duration-300">
+          <header className="sticky top-0 z-40 bg-[#F4F5F4]/90 dark:bg-[#121411]/90 backdrop-blur-md pt-4 pb-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-4 print-hide transition-colors duration-300">
             <div className="flex flex-col">
-              <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-[#1A1C19] dark:text-[#E2E3DE]">
-                Калькулятор <span className="hidden sm:inline">производства</span>
+              <h1 className="text-xl font-medium tracking-tight text-[#1A1C19] dark:text-[#E2E3DE]">
+                Калькулятор <span className="hidden sm:inline">для менеджеров</span>
               </h1>
-              <p className="text-[11px] md:text-[12px] font-medium text-slate-500 dark:text-slate-400 tracking-wide">ООО "ЗМК Арсенал"</p>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide">ООО "ЗМК Арсенал"</p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 w-full md:w-auto">
+            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 w-full sm:w-auto">
               <button
                 onClick={() => {
                   setShowHistory(!showHistory);
@@ -1001,18 +1001,18 @@ export function CalculatorApp({
                 </div>
               </div>
               
-              <div className="col-span-1 sm:col-span-2 2xl:col-span-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 border-t border-slate-200 dark:border-slate-800 pt-4 mt-2">
-                <div className="flex-1 flex justify-between items-center px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
-                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Заготовка</span>
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">{currentAdminRawPrice ? formatInputValue(currentAdminRawPrice) : '—'} <span className="text-slate-500 dark:text-slate-400 text-[10px] ml-0.5">₽/т</span></span>
+              <div className="col-span-1 sm:col-span-2 2xl:col-span-4 flex flex-col sm:flex-row gap-2 sm:gap-3 border-t border-slate-200 dark:border-slate-800 pt-4 mt-2">
+                <div className="flex-1 flex justify-between items-center px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Цена заготовки</span>
+                  <span className="font-medium text-slate-900 dark:text-white text-sm">{currentAdminRawPrice ? formatInputValue(currentAdminRawPrice) : '—'} <span className="text-slate-500 dark:text-slate-400 text-xs ml-1">руб/т</span></span>
                 </div>
-                <div className="flex-1 flex justify-between items-center px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
-                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Лом</span>
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">{formatInputValue(adminScrapPrice)} <span className="text-slate-500 dark:text-slate-400 text-[10px] ml-0.5">₽/т</span></span>
+                <div className="flex-1 flex justify-between items-center px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Цена лома</span>
+                  <span className="font-medium text-slate-900 dark:text-white text-sm">{formatInputValue(adminScrapPrice)} <span className="text-slate-500 dark:text-slate-400 text-xs ml-1">руб/т</span></span>
                 </div>
-                <div className="flex-1 flex justify-between items-center px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
-                  <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Остатки</span>
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">{formatInputValue(effectiveRemnantPrice)} <span className="text-slate-500 dark:text-slate-400 text-[10px] ml-0.5">₽/т</span></span>
+                <div className="flex-1 flex justify-between items-center px-3 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Цена остатков</span>
+                  <span className="font-medium text-slate-900 dark:text-white text-sm">{formatInputValue(adminRemnantPrice)} <span className="text-slate-500 dark:text-slate-400 text-xs ml-1">руб/т</span></span>
                 </div>
               </div>
             </div>
