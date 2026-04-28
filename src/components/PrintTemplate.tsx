@@ -37,32 +37,44 @@ export function PrintTemplate({ reportData, orderWeight, selectedTarget }: Print
   const totalRemKg = (remTons * 1000).toFixed(1);
 
   return (
-    <div className="hidden print:block bg-white w-full max-w-[210mm] mx-auto text-black font-serif text-[12px] leading-tight" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+    <div className="hidden print:block print-block bg-white w-[210mm] min-h-[297mm] mx-auto text-black font-serif text-[12px] leading-tight shadow-none" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
       <style>
         {`
           @media print {
             @page {
-              size: A4;
-              margin: 10mm;
+              size: A4 portrait;
+              margin: 0;
             }
-            body {
-              background: white;
+            html, body {
+              height: 100%;
+              margin: 0 !important;
+              padding: 0 !important;
+              background-color: white !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
             .print-hide {
               display: none !important;
+            }
+            /* Force reveal only the print template */
+            body > *:not(.print-block) {
+              display: none !important;
+            }
+            #root > *:not(.print-block) {
+               display: none !important;
             }
           }
         `}
       </style>
       
       {/* HEADER */}
-      <div className="text-center mb-6 pt-4">
-        <h1 className="text-lg font-bold uppercase tracking-tight">ООО «ЗМК АРСЕНАЛ»</h1>
-        <p className="text-sm font-bold mt-1">Коммерческий расчет от {dateStr}</p>
-        <p className="text-[11px] mt-1 italic text-gray-700">Внутренний документ расчета рентабельности</p>
+      <div className="text-center pt-10 pb-6">
+        <h1 className="text-[18pt] font-bold uppercase tracking-tight">ООО «ЗМК АРСЕНАЛ»</h1>
+        <p className="text-[14pt] font-bold mt-1 text-[#1A1C19]">Коммерческий расчет от {dateStr}</p>
+        <p className="text-[10pt] mt-1 italic text-gray-700">Внутренний документ расчета рентабельности</p>
       </div>
 
-      <div className="px-8 pb-8 space-y-5">
+      <div className="px-[15mm] pb-[15mm] space-y-6">
         
         {/* COMMERCE SECTION */}
         <section>

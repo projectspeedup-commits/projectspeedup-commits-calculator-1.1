@@ -23,7 +23,10 @@ try {
     app = !getApps().length ? initializeApp(finalConfig) : getApp();
     auth = getAuth(app);
     try {
-      db = initializeFirestore(app, { experimentalForceLongPolling: true });
+      db = initializeFirestore(app, { 
+        experimentalForceLongPolling: true,
+        ignoreUndefinedProperties: true
+      });
     } catch (e) {
       db = getFirestore(app);
     }
