@@ -238,6 +238,35 @@ export function CalculatorApp({
     return options.slice(0, 4);
   }, [lengthAfterTechEnds, orderedLength]);
 
+  const optimalBilletLengths = useMemo(() => {
+    if (!orderedLength || !currentDrawCoef || !totalTechCoef) return [];
+    const targetPiece = Number(orderedLength);
+    if (isNaN(targetPiece) || targetPiece <= 0) return [];
+
+    const draw = currentDrawCoef;
+    const tech = totalTechCoef;
+    
+    const options = [];
+    // Пробуем разное количество деталей (n), чтобы найти подходящие длины заготовок
+    for (let n = 1; n <= 60; n++) {
+      const idealBillet = (n * targetPiece * tech) / draw;
+      // Округляем вверх до ближайших 100 мм (согласно запросу)
+      const roundedBillet = Math.ceil(idealBillet / 100) * 100;
+      
+      if (roundedBillet >= 4000 && roundedBillet <= 8500) {
+        const estUseful = (roundedBillet * draw) / tech;
+        const scrap = estUseful - (n * targetPiece);
+        // Добавляем только если остаток положительный (поместится)
+        if (scrap >= 0) {
+          options.push({ n, billetLength: roundedBillet, scrap });
+        }
+      }
+    }
+    // Сортируем по минимальному остатку и берем топ-3 уникальных длин
+    const uniqueOptions = Array.from(new Map(options.map(item => [item.billetLength, item])).values());
+    return uniqueOptions.sort((a, b) => a.scrap - b.scrap).slice(0, 3);
+  }, [orderedLength, currentDrawCoef, totalTechCoef]);
+
   const requiredWeight = useMemo(() => {
     if (!orderWeight || !currentCoefficient) return null;
     const val = Number(orderWeight) * currentCoefficient;
@@ -676,7 +705,14 @@ export function CalculatorApp({
     }
     text += `-----------------------------------\n`;
     text += `Блок снабжение:\n`;
-    text += `Сырье к закупке: ${profileTypeStr === "Круг" ? "Круг г/к ф" : "Шестигранник г/к s"}${selectedRaw || "?"} мм ${formattedGrade || "?"} (${gost || "?"}), количество ${requiredWeight || "?"} тн.\n`;
+    text += `Сырье к закупке: ${profileTypeStr === "Круг" ? "Круг г/к ф" : "Шестигранник г/к s"}${selectedRaw || "?"} мм ${formattedGrade || "?"} (${gost || "?"})\n`;
+    
+    if (optimalBilletLengths && optimalBilletLengths.length > 0) {
+      const recStr = optimalBilletLengths.map(opt => `${opt.billetLength} мм (на ${opt.n} шт.)`).join(", ");
+      text += `Рекомендуемая длина заготовки: ${recStr}\n`;
+    }
+    
+    text += `Количество: ${requiredWeight || "?"} тн.\n`;
     text += `-----------------------------------\n`;
     text += `Блок экономика:\n`;
     text += `Расчет на 1 тонну продукции\n`;
@@ -706,7 +742,7 @@ export function CalculatorApp({
       text += `Маржа (1 тн, без НДС): ${marginPrefix}${formatCurrency(commercialStats.profitPerTon)} руб. (${marginPrefix}${commercialStats.marginPercent.toFixed(1)}%)\n`;
     }
     return text;
-  }, [reportData, selectedTarget, orderWeight]);
+  }, [reportData, selectedTarget, orderWeight, optimalBilletLengths]);
 
   useEffect(() => {
     onPrintDataUpdate({
@@ -1076,11 +1112,35 @@ export function CalculatorApp({
           </section>
 
           <section className="bg-white dark:bg-[#1A1C19] rounded-2xl p-4 sm:p-5 space-y-4 sm:space-y-6 print-shadow-none relative overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-300">
-            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-3 relative z-10">
-              <div className="p-2 bg-[#4A6572]/10 border border-[#4A6572]/20 text-[#4A6572] dark:text-slate-300 rounded-xl print-hide">
-                <Ruler className="w-4 h-4" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#4A6572]/10 border border-[#4A6572]/20 text-[#4A6572] dark:text-slate-300 rounded-xl print-hide">
+                  <Ruler className="w-4 h-4" />
+                </div>
+                <h2 className="text-lg font-medium tracking-tight text-[#1A1C19] dark:text-white">Раскрой и остатки</h2>
               </div>
-              <h2 className="text-lg font-medium tracking-tight text-[#1A1C19] dark:text-white">Раскрой и остатки</h2>
+
+              {optimalBilletLengths.length > 0 && (
+                <div className="bg-indigo-600/10 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-2xl flex items-center gap-4 transition-all">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm">
+                      <Ruler className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-indigo-700 dark:text-indigo-300 uppercase leading-none">Реком. заготовка</span>
+                      <span className="text-[8px] font-bold text-indigo-600/60 dark:text-indigo-400/60 uppercase mt-0.5">шаг 100мм</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-1.5">
+                    {optimalBilletLengths.map((opt, i) => (
+                      <div key={i} className="flex flex-col items-center bg-white dark:bg-[#1A1C19] border border-indigo-100 dark:border-indigo-500/30 px-2.5 py-1 rounded-xl shadow-sm">
+                        <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 leading-none">{opt.billetLength}</span>
+                        <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase mt-0.5">на {opt.n} шт.</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Layout lengths */}
@@ -1183,42 +1243,44 @@ export function CalculatorApp({
               </div>
             </div>
 
-             {/* Optimal layout recommendation */}
-            {optimalLengths.length > 0 && Number(lengthAfterTechEnds) > 0 && (
-              <div className="bg-[#E8DEF8] dark:bg-[#4A6572]/10 border border-[#CAC4D0] dark:border-[#4A6572]/30 rounded-[16px] p-4 print-hide relative z-10 shadow-sm transition-colors">
-                <div className="flex flex-col sm:flex-row items-start gap-4">
-                  <div className="p-2 bg-[#6750A4]/10 dark:bg-white/10 rounded-full shrink-0 hidden sm:flex items-center justify-center">
-                    <Info className="w-5 h-5 text-[#1D192B] dark:text-slate-300" />
-                  </div>
-                  <div className="space-y-4 w-full">
-                    <div>
-                      <h3 className="text-sm font-medium text-[#1D192B] dark:text-slate-200 flex items-center gap-2">
-                         <Info className="w-4 h-4 text-[#1D192B] dark:text-slate-300 sm:hidden" />
-                         Безотходный раскрой 
-                      </h3>
-                      <p className="text-[10px] text-[#49454F] dark:text-slate-400 mt-1 bg-white/50 dark:bg-black/20 px-2 py-1.5 rounded-lg mt-2 inline-block">
-                        Оптимальная длина = (Чистая длина / Кол-во частей) − 5 мм
-                      </p>
+             {optimalLengths.length > 0 && Number(lengthAfterTechEnds) > 0 && (
+              <div className="bg-[#E8DEF8] dark:bg-[#4A6572]/10 border border-[#CAC4D0] dark:border-[#4A6572]/30 rounded-[16px] p-4 sm:p-5 print-hide relative z-10 shadow-sm transition-colors">
+                <div className="flex flex-col lg:flex-row items-start gap-6">
+                  <div className="flex-1 space-y-4 w-full">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#CAC4D0]/50 dark:border-slate-800 pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#6750A4]/10 dark:bg-white/10 rounded-xl hidden sm:flex items-center justify-center">
+                          <Info className="w-5 h-5 text-[#1D192B] dark:text-slate-300" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-[#1D192B] dark:text-slate-200 uppercase tracking-tight">
+                            Безотходный раскрой 
+                          </h3>
+                          <p className="text-[10px] text-[#49454F] dark:text-slate-400 font-medium">
+                            Оптимальная длина = (Чистая длина / Кол-во частей) − 5 мм
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-2">
-                      {optimalLengths.map((opt, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setOrderedLength(opt.length.toString())}
-                          className="bg-white dark:bg-[#1A1C19] hover:bg-slate-50 dark:hover:bg-slate-800 border border-[#CAC4D0] dark:border-slate-700 text-left p-3 rounded-xl transition-colors group flex items-center justify-between shadow-sm focus:outline-none"
-                        >
-                          <div>
-                            <div className="font-semibold text-[#1D192B] dark:text-white text-sm">{opt.length} мм</div>
-                            <div className="text-[10px] text-[#49454F] dark:text-slate-400 font-medium">
-                              На {opt.pieces} {opt.pieces === 1 ? "часть" : opt.pieces > 1 && opt.pieces < 5 ? "части" : "частей"}
+                        {optimalLengths.map((opt, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setOrderedLength(opt.length.toString())}
+                            className="bg-white dark:bg-[#1A1C19] hover:bg-slate-50 dark:hover:bg-slate-800 border border-[#CAC4D0] dark:border-slate-700 text-left p-3 rounded-xl transition-colors group flex items-center justify-between shadow-sm focus:outline-none"
+                          >
+                            <div>
+                              <div className="font-semibold text-[#1D192B] dark:text-white text-sm">{opt.length} мм</div>
+                              <div className="text-[10px] text-[#49454F] dark:text-slate-400 font-medium">
+                                На {opt.pieces} {opt.pieces === 1 ? "часть" : opt.pieces > 1 && opt.pieces < 5 ? "части" : "частей"}
+                              </div>
                             </div>
-                          </div>
-                          <div className="w-6 h-6 rounded-full bg-[#6750A4]/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-[#6750A4]/10 dark:group-hover:bg-white/10 transition-colors shrink-0">
-                            <ArrowRight className="w-3 h-3 text-[#6750A4] dark:text-slate-400" />
-                          </div>
-                        </button>
-                      ))}
+                            <div className="w-6 h-6 rounded-full bg-[#6750A4]/5 dark:bg-white/5 flex items-center justify-center group-hover:bg-[#6750A4]/10 dark:group-hover:bg-white/10 transition-colors shrink-0">
+                              <ArrowRight className="w-3 h-3 text-[#6750A4] dark:text-slate-400" />
+                            </div>
+                          </button>
+                        ))}
                     </div>
                   </div>
                 </div>
