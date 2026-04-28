@@ -38,6 +38,22 @@ export function PrintTemplate({ reportData, orderWeight, selectedTarget }: Print
 
   return (
     <div className="hidden print:block bg-white w-full max-w-[210mm] mx-auto text-black font-serif text-[12px] leading-tight" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+      <style>
+        {`
+          @media print {
+            @page {
+              size: A4;
+              margin: 10mm;
+            }
+            body {
+              background: white;
+            }
+            .print-hide {
+              display: none !important;
+            }
+          }
+        `}
+      </style>
       
       {/* HEADER */}
       <div className="text-center mb-6 pt-4">

@@ -43,7 +43,11 @@ export function AdminPanel({
   const [remnant, setRemnant] = useState(initialRemnant);
   const [customGrades, setCustomGrades] = useState(initialCustomGrades || []);
   const [remnantPricing, setRemnantPricing] = useState<Record<string, { round: string; hex: string }>>(initialRemnantPricing || {});
-  const [economyItems, setEconomyItems] = useState<EconomyItem[]>(initialEconomyItems && initialEconomyItems.length > 0 ? initialEconomyItems : DEFAULT_ECONOMY_ITEMS);
+  const [economyItems, setEconomyItems] = useState<EconomyItem[]>(() => {
+    if (!initialEconomyItems || initialEconomyItems.length === 0) return DEFAULT_ECONOMY_ITEMS;
+    const initialMap = new Map(initialEconomyItems.map(item => [item.id, item]));
+    return DEFAULT_ECONOMY_ITEMS.map(defaultItem => initialMap.get(defaultItem.id) || defaultItem);
+  });
 
   const [newGrade, setNewGrade] = useState("");
   const [saved, setSaved] = useState(false);
@@ -57,7 +61,9 @@ export function AdminPanel({
     setCustomGrades(initialCustomGrades || []);
     setRemnantPricing(initialRemnantPricing || {});
     if (initialEconomyItems && initialEconomyItems.length > 0) {
-      setEconomyItems(initialEconomyItems);
+      const initialMap = new Map(initialEconomyItems.map(item => [item.id, item]));
+      const merged = DEFAULT_ECONOMY_ITEMS.map(defaultItem => initialMap.get(defaultItem.id) || defaultItem);
+      setEconomyItems(merged);
     }
   }, [initialRawPrices, initialScrap, initialRemnant, initialCustomGrades, initialRemnantPricing, initialEconomyItems]);
 

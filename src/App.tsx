@@ -96,7 +96,9 @@ export default function App() {
         }
 
         if (savedEconomy) {
-          setEconomyItems(JSON.parse(savedEconomy));
+          const parsed = JSON.parse(savedEconomy);
+          const initialMap = new Map(parsed.map((item: any) => [item.id, item]));
+          setEconomyItems(DEFAULT_ECONOMY_ITEMS.map(defaultItem => initialMap.get(defaultItem.id) || defaultItem));
         }
 
         if (savedRaw) {
@@ -137,8 +139,10 @@ export default function App() {
             }
 
             if (data.economyItems) {
-               setEconomyItems(data.economyItems);
-               if (typeof window !== "undefined") window.localStorage.setItem("arsenal_economy_items", JSON.stringify(data.economyItems));
+               const initialMap = new Map(data.economyItems.map((item: any) => [item.id, item]));
+               const merged = DEFAULT_ECONOMY_ITEMS.map(defaultItem => initialMap.get(defaultItem.id) || defaultItem);
+               setEconomyItems(merged);
+               if (typeof window !== "undefined") window.localStorage.setItem("arsenal_economy_items", JSON.stringify(merged));
             }
 
             if (data.rawPrices) {

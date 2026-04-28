@@ -51,6 +51,7 @@ export const DEFAULT_ECONOMY_ITEMS: EconomyItem[] = [
   { id: 'dies', name: 'Фильеры', category: 'direct', type: 'variable', norm: '0', price: '0' },
   { id: 'shot', name: 'Дробь', category: 'direct', type: 'variable', norm: '0', price: '0' },
   { id: 'lubricants', name: 'Смазочные материалы', category: 'direct', type: 'variable', norm: '0', price: '0' },
+  { id: 'cutting_discs', name: 'Отрезные диски', category: 'direct', type: 'variable', norm: '0', price: '0' },
   { id: 'packaging', name: 'Тара и упаковка', category: 'direct', type: 'variable', norm: '0', price: '0' },
   { id: 'other_tech', name: 'Прочие тех. материалы', category: 'direct', type: 'variable', norm: '0', price: '0' },
   { id: 'salary_prod', name: 'З/П (Производство)', category: 'direct', type: 'variable', norm: '0', price: '0' },
