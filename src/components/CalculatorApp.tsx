@@ -475,6 +475,11 @@ export function CalculatorApp({
         selectedRaw,
         orderWeight,
         orderedLength,
+        lengthInputValue: lengthInput.value,
+        lengthInputSource: lengthInput.source,
+        frontCoef,
+        backCoef,
+        usefulLength: lengthAfterTechEnds,
         sellPrice,
         rawPriceUsed: currentAdminRawPrice,
         scrapPriceUsed: adminScrapPrice,
@@ -550,6 +555,13 @@ export function CalculatorApp({
     setOrderWeight(calc.orderWeight);
     setOrderedLength(calc.orderedLength || "6000");
     setSellPrice(calc.sellPrice || "");
+    
+    if (calc.lengthInputValue && calc.lengthInputSource) {
+      setLengthInput({ value: calc.lengthInputValue, source: calc.lengthInputSource });
+    }
+    if (calc.frontCoef) setFrontCoef(calc.frontCoef);
+    if (calc.backCoef) setBackCoef(calc.backCoef);
+
     setShowHistory(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -922,10 +934,35 @@ export function CalculatorApp({
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
-                        <div className="cursor-pointer" onClick={() => loadCalculation(calc)}>
-                          <div className="font-semibold text-xs text-slate-800 dark:text-slate-200 mb-1">{calc.label}</div>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400">Заготовка: {calc.selectedRaw}мм</div>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400">Объем: {calc.orderWeight}тн</div>
+                        <div className="cursor-pointer space-y-1 mt-1" onClick={() => loadCalculation(calc)}>
+                          <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-700/50 px-2 py-1 rounded-md mb-2">
+                            <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Сталь:</span>
+                            <span className="text-[11px] font-black text-slate-900 dark:text-white uppercase">{calc.steelGrade}</span>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-[11px]">
+                            <div className="flex flex-col">
+                              <span className="text-[9px] uppercase font-semibold text-slate-400 dark:text-slate-500 leading-none mb-0.5">Готовый:</span>
+                              <span className="font-bold text-slate-700 dark:text-slate-200">{calc.selectedTarget} мм</span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                              <span className="text-[9px] uppercase font-semibold text-slate-400 dark:text-slate-500 leading-none mb-0.5">Заготовка:</span>
+                              <span className="font-bold text-slate-700 dark:text-slate-200">{calc.lengthInputValue || "6000"} мм</span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-[9px] uppercase font-semibold text-slate-400 dark:text-slate-500 leading-none mb-0.5">Заказ:</span>
+                              <span className="font-bold text-slate-700 dark:text-slate-200">{calc.orderedLength || "6000"} мм</span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                              <span className="text-[9px] uppercase font-semibold text-[#0D652D] dark:text-green-500 leading-none mb-0.5">Полезная:</span>
+                              <span className="font-bold text-[#0D652D] dark:text-green-400">{calc.usefulLength || "—"} мм</span>
+                            </div>
+                          </div>
+
+                          <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                            <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500">{calc.orderWeight} тн</span>
+                            <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400">{calc.profileType === 'round' ? 'Круг' : 'Шестигр.'}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
