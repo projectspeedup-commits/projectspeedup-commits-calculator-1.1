@@ -1,11 +1,12 @@
 import { DEFAULT_STEEL_GRADES, formatCurrency, formatInputValue, getGostForGrade, getLengthLabel, getProfileGost, handleNumericInput, HEX_DATA, ROUND_DATA, TECH_COEFS_ROUND, EconomyItem, DEFAULT_ECONOMY_ITEMS } from "../lib/constants";
-import { AlertTriangle, ArrowRight, Briefcase, Calculator, Check, Circle, Copy, Hexagon, History, Info, Key, LogOut, Moon, Package, Printer, RotateCcw, Ruler, Save, Scale, Sun, Trash2, Wallet, TrendingUp, BarChart3, PieChart, Plus, Minus } from "lucide-react";
+import { AlertTriangle, ArrowRight, Briefcase, Calculator, Check, Circle, Copy, Hexagon, History, Info, Key, LogOut, Moon, Package, Printer, RotateCcw, Ruler, Save, Scale, Sun, Trash2, Wallet, TrendingUp, BarChart3, PieChart, Plus, Minus, BookOpen } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { PrintTemplate } from "./PrintTemplate";
 import { db } from "../lib/firebase";
 import { collection, addDoc, serverTimestamp, query, where, onSnapshot, orderBy, deleteDoc, doc, getDocs, writeBatch } from "firebase/firestore";
 
 import { ConfirmModal } from "./ConfirmModal";
+import { UserManualModal } from "./UserManualModal";
 
 interface CalculatorAppProps {
   adminRawPrices: Record<string, string>;
@@ -57,6 +58,7 @@ export function CalculatorApp({
   const [isClearing, setIsClearing] = useState(false);
   const [savedCalculations, setSavedCalculations] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [showManual, setShowManual] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   const [isEconomyExpanded, setIsEconomyExpanded] = useState(false);
@@ -804,6 +806,13 @@ export function CalculatorApp({
             </div>
 
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => setShowManual(true)}
+                className="flex items-center justify-center w-9 h-9 bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] rounded-xl transition-all font-medium focus:outline-none border border-[#DDE0DC] dark:border-[#2C2F2B] shadow-sm mr-1"
+                title="Инструкция"
+              >
+                <BookOpen className="w-5 h-5" />
+              </button>
               <button
                 onClick={() => {
                   setShowHistory(!showHistory);
@@ -1627,6 +1636,10 @@ export function CalculatorApp({
         message={`Вы действительно хотите удалить историю расчетов (${savedCalculations.length} записей)? Это действие необратимо.`}
         confirmText="Удалить все"
         cancelText="Отмена"
+      />
+      <UserManualModal 
+        isOpen={showManual}
+        onClose={() => setShowManual(false)}
       />
     </>
   );
