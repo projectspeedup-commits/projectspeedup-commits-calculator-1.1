@@ -20,6 +20,7 @@ interface CalculatorAppProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
   onAdminSwitch: () => void;
+  onPrintDataUpdate: (data: any) => void;
 }
 
 export function CalculatorApp({
@@ -35,6 +36,7 @@ export function CalculatorApp({
   isDarkMode,
   toggleTheme,
   onAdminSwitch,
+  onPrintDataUpdate,
 }: CalculatorAppProps) {
   const [profileType, setProfileType] = useState<"round" | "hex">("round");
   const [steelGrade, setSteelGrade] = useState("");
@@ -692,6 +694,15 @@ export function CalculatorApp({
     return text;
   }, [reportData, selectedTarget, orderWeight]);
 
+  useEffect(() => {
+    onPrintDataUpdate({
+      reportData,
+      orderWeight,
+      selectedTarget,
+      reportText
+    });
+  }, [reportData, orderWeight, selectedTarget, reportText, onPrintDataUpdate]);
+
   const handleCopy = () => {
     const textArea = document.createElement("textarea");
     textArea.value = reportText;
@@ -709,12 +720,6 @@ export function CalculatorApp({
 
   return (
     <>
-      <PrintTemplate 
-        printText={reportText} 
-        reportData={reportData}
-        orderWeight={orderWeight}
-        selectedTarget={selectedTarget}
-      />
       <div className="min-h-screen bg-[#F4F5F4] dark:bg-[#121411] flex flex-col md:flex-row print:hidden transition-colors duration-300">
 
       {/* Mobile App Bar */}
@@ -804,10 +809,10 @@ export function CalculatorApp({
                   setShowHistory(!showHistory);
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className={`flex items-center justify-center gap-1.5 px-4 h-9 rounded-md transition-colors font-medium text-xs focus:outline-none ${
+                className={`flex items-center justify-center gap-2 px-3 sm:px-4 h-9 min-w-[36px] sm:min-w-[115px] rounded-xl transition-all font-medium text-xs focus:outline-none border shadow-sm ${
                     showHistory 
-                      ? "bg-slate-800 dark:bg-slate-100 text-white dark:text-slate-900" 
-                      : "bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200"
+                      ? "bg-[#1A1C19] dark:bg-[#E2E3DE] text-white dark:text-[#121411] border-[#1A1C19] dark:border-white" 
+                      : "bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] border-[#DDE0DC] dark:border-[#2C2F2B]"
                 }`}
                 title="История расчетов"
               >
@@ -817,7 +822,8 @@ export function CalculatorApp({
               <button
                 onClick={handleSave}
                 disabled={isSaving || !steelGrade}
-                className="flex items-center justify-center gap-1.5 px-4 h-9 bg-[#4A6572] dark:bg-[#4A6572] hover:bg-[#344955] text-white rounded-md transition-colors font-medium text-xs focus:outline-none disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-3 sm:px-4 h-9 min-w-[36px] sm:min-w-[115px] bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] rounded-xl transition-all font-medium text-xs focus:outline-none disabled:opacity-50 border border-[#DDE0DC] dark:border-[#2C2F2B] shadow-sm"
+                title="Сохранить расчет"
               >
                 {isSaving ? (
                   <RotateCcw className="w-4 h-4 animate-spin" />
@@ -828,26 +834,31 @@ export function CalculatorApp({
               </button>
               <button
                 onClick={handleCopy}
-                className={`flex items-center justify-center gap-1.5 px-4 h-9 rounded-md transition-colors font-medium text-xs focus:outline-none ${
-                  isCopied ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300" : "bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200"
+                className={`flex items-center justify-center gap-2 px-3 sm:px-4 h-9 min-w-[36px] sm:min-w-[115px] rounded-xl transition-all font-medium text-xs focus:outline-none border shadow-sm ${
+                  isCopied 
+                    ? "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800" 
+                    : "bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] border-[#DDE0DC] dark:border-[#2C2F2B]"
                 }`}
+                title="Копировать расчет"
               >
                 {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                 <span className="hidden sm:inline">{isCopied ? "Скопировано" : "Копировать"}</span>
               </button>
               <button
                 onClick={handlePrint}
-                className="flex items-center justify-center gap-1.5 px-4 h-9 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-md transition-colors font-medium text-xs focus:outline-none"
+                className="flex items-center justify-center gap-2 px-3 sm:px-4 h-9 min-w-[36px] sm:min-w-[115px] bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] rounded-xl transition-all font-medium text-xs focus:outline-none border border-[#DDE0DC] dark:border-[#2C2F2B] shadow-sm"
+                title="Печатная форма"
               >
                 <Printer className="w-4 h-4" />
-                <span className="sm:hidden">Печать</span>
+                <span className="hidden sm:inline">Печать</span>
               </button>
               <button
                 onClick={handleReset}
-                className="flex items-center justify-center w-9 h-9 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-md transition-colors font-medium focus:outline-none"
+                className="flex items-center justify-center gap-2 px-3 sm:px-4 h-9 min-w-[36px] sm:min-w-[115px] bg-[#EAECE9] dark:bg-[#1A1C19] hover:bg-[#DDE0DC] dark:hover:bg-[#252824] text-[#1A1C19] dark:text-[#E2E3DE] rounded-xl transition-all font-medium text-xs focus:outline-none border border-[#DDE0DC] dark:border-[#2C2F2B] shadow-sm"
                 title="Сбросить все"
               >
                 <RotateCcw className="w-4 h-4" />
+                <span className="hidden sm:inline">Сбросить</span>
               </button>
             </div>
           </header>

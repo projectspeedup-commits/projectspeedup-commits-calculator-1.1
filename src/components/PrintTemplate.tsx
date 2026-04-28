@@ -37,7 +37,7 @@ export function PrintTemplate({ reportData, orderWeight, selectedTarget }: Print
   const totalRemKg = (remTons * 1000).toFixed(1);
 
   return (
-    <div className="hidden print:block print-block bg-white w-[210mm] min-h-[297mm] mx-auto text-black font-serif text-[12px] leading-tight shadow-none" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
+    <div className="hidden print:block print-template-container bg-white w-[210mm] min-h-[297mm] mx-auto text-black font-serif text-[12px] leading-tight shadow-none" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
       <style>
         {`
           @media print {
@@ -46,22 +46,31 @@ export function PrintTemplate({ reportData, orderWeight, selectedTarget }: Print
               margin: 0;
             }
             html, body {
+              width: 100%;
               height: 100%;
               margin: 0 !important;
               padding: 0 !important;
-              background-color: white !important;
-              -webkit-print-color-adjust: exact !important;
-              print-color-adjust: exact !important;
+              background: white !important;
             }
-            .print-hide {
+            
+            /* Hide the main application UI */
+            .print\\:hidden {
               display: none !important;
             }
-            /* Force reveal only the print template */
-            body > *:not(.print-block) {
-              display: none !important;
-            }
-            #root > *:not(.print-block) {
-               display: none !important;
+
+            /* Isolate the print template */
+            .print-template-container {
+              display: block !important;
+              visibility: visible !important;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 210mm;
+              min-height: 297mm;
+              z-index: 9999999;
+              background: white !important;
+              margin: 0 !important;
+              padding: 0 !important;
             }
           }
         `}

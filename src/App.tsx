@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { AdminPanel } from "./components/AdminPanel";
 import { CalculatorApp } from "./components/CalculatorApp";
 import { LoginScreen } from "./components/LoginScreen";
+import { PrintTemplate } from "./components/PrintTemplate";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function App() {
   const [view, setView] = useState<"login" | "manager" | "admin">("login");
   const [user, setUser] = useState<any>(null);
   const [isCloudActive, setIsCloudActive] = useState(false);
+  const [printData, setPrintData] = useState<any>(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = window.localStorage.getItem("arsenal_theme");
@@ -230,82 +232,93 @@ export default function App() {
   }, [view]);
 
   return (
-    <div className="min-h-screen bg-[#F0F4F4] dark:bg-[#111310] flex flex-col font-sans">
-      <AnimatePresence mode="wait">
-        {view === "login" && (
-          <motion.div 
-            key="login"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3 }}
-            className="flex-1 flex flex-col"
-          >
-            <LoginScreen 
-              onManagerLogin={() => setView("manager")} 
-              onAdminLogin={() => setView("admin")} 
-              isCloudActive={isCloudActive}
-              isDarkMode={isDarkMode}
-              toggleTheme={toggleTheme}
-            />
-          </motion.div>
-        )}
-
-        {view === "admin" && (
-          <motion.div 
-            key="admin"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-            className="flex-1 flex flex-col"
-          >
-            <div className="flex-1 w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8">
-              <AdminPanel
-                initialRawPrices={globalRawPrices}
-                initialScrap={globalScrapPrice}
-                initialRemnant={globalRemnantPrice}
-                initialCustomGrades={customGrades}
-                initialRemnantPricing={remnantPricing}
-                initialEconomyItems={economyItems}
-                onSave={handleSaveGlobal}
-                onLogout={() => setView("login")}
+    <>
+      {printData && (
+        <PrintTemplate 
+          reportData={printData.reportData}
+          orderWeight={printData.orderWeight}
+          selectedTarget={printData.selectedTarget}
+          printText={printData.reportText}
+        />
+      )}
+      <div className="min-h-screen bg-[#F0F4F4] dark:bg-[#111310] flex flex-col font-sans print:hidden">
+        <AnimatePresence mode="wait">
+          {view === "login" && (
+            <motion.div 
+              key="login"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 flex flex-col"
+            >
+              <LoginScreen 
+                onManagerLogin={() => setView("manager")} 
+                onAdminLogin={() => setView("admin")} 
                 isCloudActive={isCloudActive}
                 isDarkMode={isDarkMode}
                 toggleTheme={toggleTheme}
               />
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
 
-        {view === "manager" && (
-          <motion.div 
-            key="manager"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.3 }}
-            className="flex-1 flex flex-col"
-          >
-            <div className="flex-1 w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
-              <CalculatorApp
-                adminRawPrices={globalRawPrices}
-                adminScrapPrice={globalScrapPrice}
-                adminRemnantPrice={globalRemnantPrice}
-                customGrades={customGrades}
-                remnantPricing={remnantPricing}
-                economyItems={economyItems}
-                onLogout={() => setView("login")}
-                isCloudActive={isCloudActive}
-                user={user}
-                isDarkMode={isDarkMode}
-                toggleTheme={toggleTheme}
-                onAdminSwitch={() => setView("login")}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          {view === "admin" && (
+            <motion.div 
+              key="admin"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 flex flex-col"
+            >
+              <div className="flex-1 w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8">
+                <AdminPanel
+                  initialRawPrices={globalRawPrices}
+                  initialScrap={globalScrapPrice}
+                  initialRemnant={globalRemnantPrice}
+                  initialCustomGrades={customGrades}
+                  initialRemnantPricing={remnantPricing}
+                  initialEconomyItems={economyItems}
+                  onSave={handleSaveGlobal}
+                  onLogout={() => setView("login")}
+                  isCloudActive={isCloudActive}
+                  isDarkMode={isDarkMode}
+                  toggleTheme={toggleTheme}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {view === "manager" && (
+            <motion.div 
+              key="manager"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1 flex flex-col"
+            >
+              <div className="flex-1 w-full max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
+                <CalculatorApp
+                  adminRawPrices={globalRawPrices}
+                  adminScrapPrice={globalScrapPrice}
+                  adminRemnantPrice={globalRemnantPrice}
+                  customGrades={customGrades}
+                  remnantPricing={remnantPricing}
+                  economyItems={economyItems}
+                  onLogout={() => setView("login")}
+                  isCloudActive={isCloudActive}
+                  user={user}
+                  isDarkMode={isDarkMode}
+                  toggleTheme={toggleTheme}
+                  onAdminSwitch={() => setView("login")}
+                  onPrintDataUpdate={setPrintData}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
   );
 }
