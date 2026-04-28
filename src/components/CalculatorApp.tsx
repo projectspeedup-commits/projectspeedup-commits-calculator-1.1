@@ -833,7 +833,7 @@ export function CalculatorApp({
       </div>
 
       <div className="flex-1 md:ml-[88px] pb-24 md:pb-8 relative">
-        <div className="max-w-[1024px] xl:max-w-[1440px] w-full px-4 sm:px-6 lg:px-8 mx-auto relative z-10">
+        <div className="max-w-[1920px] w-full px-4 sm:px-6 lg:px-8 mx-auto relative z-10">
           {notification && (
             <div className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl z-[100] animate-in fade-in zoom-in slide-in-from-top-4 duration-300 border ${
               notification.type === 'success' ? 'bg-green-600 border-green-500 text-white' : 'bg-red-600 border-red-500 text-white'
@@ -920,9 +920,9 @@ export function CalculatorApp({
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start pb-8">
             {showHistory && (
-              <div className="lg:col-span-2 bg-white dark:bg-[#1A1C19] rounded-[16px] border border-slate-200 dark:border-slate-800 shadow-md p-5 mb-4 animate-in fade-in slide-in-from-top-2 duration-300 text-slate-800 dark:text-slate-200">
+              <div className="lg:col-span-12 bg-white dark:bg-[#1A1C19] rounded-[16px] border border-slate-200 dark:border-slate-800 shadow-md p-5 mb-4 animate-in fade-in slide-in-from-top-2 duration-300 text-slate-800 dark:text-slate-200">
                 <div className="flex items-center justify-between mb-4 pb-2 border-b dark:border-slate-800">
                    <h3 className="font-bold text-slate-800 dark:text-white flex items-center gap-2">
                      <History className="w-5 h-5" /> Сохраненные расчеты
@@ -1007,7 +1007,7 @@ export function CalculatorApp({
               </div>
             )}
             
-            <div className="space-y-4">
+            <div className="lg:col-span-12 xl:col-span-7 space-y-4">
               <section className="bg-white dark:bg-[#1A1C19] rounded-[16px] border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-5 print-shadow-none transition-colors duration-300">
             {/* Segmented Control */}
             <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex w-full sm:max-w-[280px] sm:mx-auto mb-6 print-hide">
@@ -1396,7 +1396,7 @@ export function CalculatorApp({
           </section>
         </div>
 
-        <div className="space-y-4">
+        <div className="lg:col-span-12 xl:col-span-5 space-y-4">
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
             <div className="bg-white dark:bg-[#1A1C19] p-4 sm:p-5 flex flex-col justify-center relative z-10 border border-slate-200 dark:border-slate-800 rounded-[16px] shadow-sm transition-colors overflow-hidden">
               <div className="flex items-center gap-2 mb-2">
