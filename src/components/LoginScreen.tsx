@@ -60,17 +60,17 @@ export function LoginScreen({ onManagerLogin, onAdminLogin, isCloudActive, isDar
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl tracking-tighter text-[#1A1C19] dark:text-white mb-2 font-black uppercase italic"
+            className="text-4xl tracking-tight text-[#1A1C19] dark:text-white mb-2 font-light"
           >
-            ZMK Arsenal
+            Система расчетов
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-indigo-600 dark:text-indigo-400 font-bold tracking-[0.2em] uppercase text-[10px]"
+            className="text-[#43483F] dark:text-slate-400 font-semibold tracking-[0.2em] uppercase text-[10px]"
           >
-            Sales Calculator
+            ООО "ЗМК Арсенал"
           </motion.p>
         </div>
 

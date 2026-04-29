@@ -847,10 +847,10 @@ export function CalculatorApp({
           {/* HEADER */}
           <header className="sticky top-0 z-40 bg-[#F4F5F4]/90 dark:bg-[#121411]/90 backdrop-blur-md pt-4 pb-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-4 print-hide transition-colors duration-300">
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold tracking-tight text-[#1A1C19] dark:text-[#E2E3DE] uppercase">
-                ZMK Arsenal-sales
+              <h1 className="text-xl font-medium tracking-tight text-[#1A1C19] dark:text-[#E2E3DE]">
+                Калькулятор <span className="hidden sm:inline">для менеджеров</span>
               </h1>
-              <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-[0.2em] uppercase mt-0.5">Калькулятор продукции</p>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide">ООО "ЗМК Арсенал"</p>
             </div>
 
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 w-full sm:w-auto">
