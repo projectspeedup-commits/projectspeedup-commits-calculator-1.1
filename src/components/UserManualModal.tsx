@@ -118,6 +118,18 @@ export function UserManualModal({ isOpen, onClose }: UserManualModalProps) {
                   <li className="flex items-start gap-3">
                     <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
                     <p className="text-xs sm:text-sm font-medium leading-relaxed opacity-90 text-slate-200">
+                      <strong className="text-white">Реком. заготовка:</strong> Нажмите на чип в блоке "Раскрой и остатки", чтобы мгновенно применить оптимальную длину заготовки для текущего заказа.
+                    </p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
+                    <p className="text-xs sm:text-sm font-medium leading-relaxed opacity-90 text-slate-200">
+                      <strong className="text-white">Прутков в 1 тн:</strong> Это расчетное количество готовой продукции заданной вами длины, которое составляет 1 тонну веса.
+                    </p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
+                    <p className="text-xs sm:text-sm font-medium leading-relaxed opacity-90 text-slate-200">
                       <strong className="text-white">Печать:</strong> Вы можете сразу отправить расчет в PDF для клиента, нажав на иконку принтера.
                     </p>
                   </li>

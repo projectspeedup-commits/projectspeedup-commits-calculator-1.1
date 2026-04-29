@@ -847,10 +847,10 @@ export function CalculatorApp({
           {/* HEADER */}
           <header className="sticky top-0 z-40 bg-[#F4F5F4]/90 dark:bg-[#121411]/90 backdrop-blur-md pt-4 pb-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-slate-800/50 mb-4 print-hide transition-colors duration-300">
             <div className="flex flex-col">
-              <h1 className="text-xl font-medium tracking-tight text-[#1A1C19] dark:text-[#E2E3DE]">
-                Калькулятор <span className="hidden sm:inline">для менеджеров</span>
+              <h1 className="text-xl font-bold tracking-tight text-[#1A1C19] dark:text-[#E2E3DE] uppercase">
+                ZMK Arsenal-sales
               </h1>
-              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 tracking-wide">ООО "ЗМК Арсенал"</p>
+              <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-[0.2em] uppercase mt-0.5">Калькулятор продукции</p>
             </div>
 
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 w-full sm:w-auto">
@@ -1121,7 +1121,7 @@ export function CalculatorApp({
               </div>
 
               {optimalBilletLengths.length > 0 && (
-                <div className="bg-indigo-600/10 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-2xl flex items-center gap-4 transition-all">
+                <div className={`bg-indigo-600/10 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-3 py-2 rounded-2xl flex items-center gap-4 transition-all ${orderedLength !== '6000' && orderedLength !== '' ? 'ring-2 ring-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]' : ''}`}>
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm">
                       <Ruler className="w-3.5 h-3.5" />
@@ -1133,10 +1133,15 @@ export function CalculatorApp({
                   </div>
                   <div className="flex gap-1.5">
                     {optimalBilletLengths.map((opt, i) => (
-                      <div key={i} className="flex flex-col items-center bg-white dark:bg-[#1A1C19] border border-indigo-100 dark:border-indigo-500/30 px-2.5 py-1 rounded-xl shadow-sm">
-                        <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 leading-none">{opt.billetLength}</span>
+                      <button 
+                        key={i} 
+                        onClick={() => setLengthInput({ value: opt.billetLength.toString(), source: "raw" })}
+                        className="flex flex-col items-center bg-white dark:bg-[#1A1C19] border border-indigo-100 dark:border-indigo-500/30 px-2.5 py-1 rounded-xl shadow-sm hover:border-indigo-400 dark:hover:border-indigo-400 hover:scale-105 active:scale-95 transition-all focus:outline-none group"
+                        title="Выбрать эту длину"
+                      >
+                        <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 leading-none group-hover:text-indigo-600 dark:group-hover:text-indigo-400">{opt.billetLength} мм.</span>
                         <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase mt-0.5">на {opt.n} шт.</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -1316,13 +1321,15 @@ export function CalculatorApp({
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="space-y-1.5 sm:border-r border-slate-200 dark:border-slate-800 sm:pr-4">
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Прутков в 1 тн</span>
+                  <div className="space-y-1.5 sm:border-r border-slate-200 dark:border-slate-800 sm:pr-4 group/bars">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Прутков ({orderedLength} мм) в 1 тн готовой продукции</span>
+                    </div>
                     <div className="text-xl font-medium text-slate-900 dark:text-white">~ {piecesPerTon || 0} шт.</div>
-                    {orderedBarWeight && <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Вес 1 прутка: {orderedBarWeight.kg} кг</div>}
+                    {orderedBarWeight && <div className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-tight">Вес 1 прутка: <span className="font-bold text-slate-700 dark:text-slate-200">{orderedBarWeight.kg} кг</span></div>}
                     {orderWeight && orderedBarWeight ? (
-                      <div className="text-[10px] text-[#006A6A] dark:text-teal-400 font-semibold bg-[#006A6A]/10 dark:bg-teal-900/20 px-2 py-1 rounded-md mt-2 inline-block">
-                        Во всем заказе: ~ {new Intl.NumberFormat("ru-RU").format(totalPiecesInOrder || 0)} шт.
+                      <div className="text-[10px] text-[#006A6A] dark:text-teal-400 font-bold bg-[#006A6A]/10 dark:bg-teal-900/20 px-2 py-1 rounded-md mt-2 inline-block border border-teal-500/10">
+                        В заказе: ~ {new Intl.NumberFormat("ru-RU").format(totalPiecesInOrder || 0)} шт.
                       </div>
                     ) : null}
                   </div>
